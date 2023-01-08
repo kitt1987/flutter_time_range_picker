@@ -122,6 +122,7 @@ showTimeRangePicker({
 
   /// barrierDismissible false = user must tap button!
   bool barrierDismissible = true,
+  Orientation? orientation,
 }) async {
   assert(debugCheckHasMaterialLocalizations(context));
 
@@ -164,6 +165,7 @@ showTimeRangePicker({
         clockRotation: clockRotation,
         maxDuration: maxDuration,
         minDuration: minDuration,
+        orientation: orientation,
       ));
 
   return await showDialog<TimeRange>(
@@ -230,6 +232,8 @@ class TimeRangePicker extends StatefulWidget {
   final Duration? maxDuration;
   final Duration minDuration;
 
+  final Orientation? orientation;
+
   TimeRangePicker({
     Key? key,
     this.start,
@@ -269,6 +273,7 @@ class TimeRangePicker extends StatefulWidget {
     this.use24HourFormat = true,
     this.hideTimes = false,
     this.hideButtons = false,
+    this.orientation,
   })  : ticksLength = ticksLength == null ? strokeWidth : 12,
         assert(interval.inSeconds <= minDuration.inSeconds,
             "interval must be smaller or same as min duration - adjust either one"),
@@ -610,7 +615,9 @@ class TimeRangePickerState extends State<TimeRangePicker>
     final ThemeData themeData = Theme.of(context);
 
     return OrientationBuilder(
-      builder: (_, orientation) => orientation == Orientation.portrait
+      builder: (_, orientation) => orientation == Orientation.portrait ||
+              (widget.orientation != null &&
+                  widget.orientation == Orientation.portrait)
           ? Column(
               key: _wrapperKey,
               mainAxisSize: MainAxisSize.min,
